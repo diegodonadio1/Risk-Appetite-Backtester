@@ -125,6 +125,33 @@ st.markdown("""
       font-family: 'Courier New', monospace !important;
       letter-spacing: 1px;
   }
+  /* ── Botão secundário/padrão (ex: OTIMIZAR, "Usar") — sem isso cai no
+     branco padrão do tema light do Streamlit, ilegível sobre fundo preto ── */
+  [data-testid="stBaseButton-secondary"] button,
+  .stButton > button[kind="secondary"],
+  .stButton > button,
+  button[kind="secondary"] {
+      background-color: #111111 !important;
+      color: #e0e0e0 !important;
+      border: 1px solid #444444 !important;
+      font-family: 'Courier New', monospace !important;
+  }
+  [data-testid="stBaseButton-secondary"] button:hover,
+  .stButton > button[kind="secondary"]:hover,
+  .stButton > button:hover,
+  button[kind="secondary"]:hover {
+      background-color: #FF7700 !important;
+      color: #000000 !important;
+      border-color: #FF7700 !important;
+  }
+  [data-testid="stBaseButton-secondary"] button:disabled,
+  .stButton > button[kind="secondary"]:disabled,
+  .stButton > button:disabled,
+  button[kind="secondary"]:disabled {
+      background-color: #1a1a1a !important;
+      color: #777777 !important;
+      border: 1px solid #333333 !important;
+  }
   /* ── Métricas ── */
   [data-testid="stMetric"] {
       background-color: #0d0d0d !important;
