@@ -1813,6 +1813,116 @@ TR = {
         'ko': 'OPTIMIZER &nbsp;|&nbsp; {ticker} &nbsp;|&nbsp; Walk-Forward 4yr IS / 12m OOS &nbsp;|&nbsp; {n} 윈도우 &nbsp;|&nbsp; 576개 조합 (8x8 진입, 9개 청산)',
         'ar': 'OPTIMIZER &nbsp;|&nbsp; {ticker} &nbsp;|&nbsp; Walk-Forward 4yr IS / 12m OOS &nbsp;|&nbsp; {n} نافذة &nbsp;|&nbsp; 576 توليفة (8×8 دخول، 9 خروج)',
     },
+    'help_optimizer': {
+        'en': 'Runs a walk-forward test: for each 4-year In-Sample window, tests all entry/exit percentile combinations of the indicator and measures the result in the next 12 months Out-of-Sample, rolling forward 6 months at a time. Ranks the 576 combos by 2 criteria: (1) highest median Sharpe across OOS windows; (2) lowest median Drawdown among combos with positive median return. Click a bar in the window chart below to inspect the OOS NAV and indicator for that period.',
+        'pt': 'Roda um teste walk-forward: para cada janela de 4 anos In-Sample, testa todas as combinacoes de percentis de entrada/saida do indicador e mede o resultado nos 12 meses seguintes Out-of-Sample, avancando 6 em 6 meses. Ranqueia os 576 combos por 2 criterios: (1) maior Sharpe mediano nas janelas OOS; (2) menor Drawdown mediano entre os combos com retorno mediano positivo. Clique numa barra do grafico de janelas abaixo para ver a cota e o indicador daquele periodo.',
+        'es': 'Ejecuta una prueba walk-forward: para cada ventana de 4 anos In-Sample, prueba todas las combinaciones de percentiles de entrada/salida del indicador y mide el resultado en los siguientes 12 meses Out-of-Sample, avanzando 6 meses a la vez. Clasifica las 576 combinaciones por 2 criterios: (1) mayor Sharpe mediano en las ventanas OOS; (2) menor Drawdown mediano entre las combinaciones con retorno mediano positivo. Haga clic en una barra del grafico de ventanas abajo para ver el NAV y el indicador OOS de ese periodo.',
+        'fr': "Execute un test walk-forward : pour chaque fenetre In-Sample de 4 ans, teste toutes les combinaisons de percentiles d'entree/sortie de l'indicateur et mesure le resultat sur les 12 mois suivants Out-of-Sample, en avancant de 6 mois a la fois. Classe les 576 combinaisons selon 2 criteres : (1) le Sharpe median le plus eleve sur les fenetres OOS ; (2) le Drawdown median le plus faible parmi les combinaisons a rendement median positif. Cliquez sur une barre du graphique des fenetres ci-dessous pour voir la VL et l'indicateur OOS de cette periode.",
+        'de': 'Fuhrt einen Walk-Forward-Test durch: Fur jedes 4-jaehrige In-Sample-Fenster werden alle Eintritts-/Austritts-Perzentil-Kombinationen des Indikators getestet und das Ergebnis in den folgenden 12 Monaten Out-of-Sample gemessen, wobei jeweils 6 Monate vorgeruckt wird. Die 576 Kombinationen werden nach 2 Kriterien eingestuft: (1) hoechster Median-Sharpe ueber die OOS-Fenster; (2) niedrigster Median-Drawdown unter den Kombinationen mit positivem Median-Ertrag. Klicken Sie auf einen Balken im Fenster-Diagramm unten, um den OOS-NAV und den Indikator fur diesen Zeitraum zu sehen.',
+        'ja': '各4年間のIn-Sampleウィンドウについて、指標のすべてのエントリー/エグジットパーセンタイル組み合わせをテストし、その後の12か月間のOut-of-Sample結果を6か月ごとにローリングして測定するウォークフォワードテストを実行します。576通りの組み合わせを2つの基準でランク付けします: (1) OOSウィンドウ全体での中央値Sharpeが最も高い、(2) 中央値リターンが正の組み合わせの中で中央値Drawdownが最も低い。下のウィンドウチャートのバーをクリックすると、その期間のOOS NAVと指標を確認できます。',
+        'zh': '运行一个滚动前进测试：对每个4年的样本内(In-Sample)窗口，测试指标的所有进场/出场百分位组合，并测量随后12个月样本外(Out-of-Sample)的结果，每次滚动前进6个月。按2个标准对576种组合进行排名：(1) 在OOS窗口中具有最高的中位数Sharpe；(2) 在中位数收益为正的组合中具有最低的中位数回撤。点击下方窗口图表中的柱形可查看该时段的OOS净值和指标。',
+        'ko': '각 4년 In-Sample 윈도우에 대해 지표의 모든 진입/청산 백분위 조합을 테스트하고, 6개월씩 롤링하며 이후 12개월 Out-of-Sample 결과를 측정하는 워크포워드 테스트를 실행합니다. 576개 조합을 2가지 기준으로 순위를 매깁니다: (1) OOS 윈도우 전체에서 가장 높은 중간값 샤프 비율; (2) 중간값 수익률이 양수인 조합 중 가장 낮은 중간값 드로다운. 아래 윈도우 차트의 막대를 클릭하면 해당 기간의 OOS NAV와 지표를 확인할 수 있습니다.',
+        'ar': 'يشغل اختبار walk-forward: لكل نافذة In-Sample مدتها 4 سنوات، يختبر جميع تركيبات النسب المئوية للدخول/الخروج للمؤشر ويقيس النتيجة في الأشهر الـ12 التالية Out-of-Sample، بالتقدم 6 أشهر في كل مرة. يصنف 576 تركيبة وفق معيارين: (1) أعلى متوسط Sharpe عبر نوافذ OOS؛ (2) أدنى متوسط Drawdown بين التركيبات ذات العائد المتوسط الإيجابي. انقر على شريط في مخطط النوافذ أدناه لمعاينة NAV والمؤشر OOS لتلك الفترة.',
+    },
+    'window_detail_title': {
+        'en': 'Window {window} — OOS detail',
+        'pt': 'Janela {window} — detalhe OOS',
+        'es': 'Ventana {window} — detalle OOS',
+        'fr': 'Fenetre {window} — detail OOS',
+        'de': 'Fenster {window} — OOS-Detail',
+        'ja': 'ウィンドウ {window} — OOS詳細',
+        'zh': '窗口 {window} — OOS详情',
+        'ko': '윈도우 {window} — OOS 상세',
+        'ar': 'النافذة {window} — تفاصيل OOS',
+    },
+    'mini_chart_equity_title': {
+        'en': 'OOS NAV (base 100)',
+        'pt': 'Cota OOS (base 100)',
+        'es': 'NAV OOS (base 100)',
+        'fr': 'VL OOS (base 100)',
+        'de': 'OOS-NAV (Basis 100)',
+        'ja': 'OOS NAV（基準100）',
+        'zh': 'OOS净值（基数100）',
+        'ko': 'OOS NAV (기준 100)',
+        'ar': 'NAV خارج العينة (الأساس 100)',
+    },
+    'mini_chart_indicator_title': {
+        'en': 'Risk Appetite — entry/exit levels',
+        'pt': 'Risk Appetite — niveis de entrada/saida',
+        'es': 'Risk Appetite — niveles de entrada/salida',
+        'fr': "Risk Appetite — niveaux d'entree/sortie",
+        'de': 'Risk Appetite — Ein-/Ausstiegsniveaus',
+        'ja': 'Risk Appetite — エントリー/エグジットレベル',
+        'zh': 'Risk Appetite — 进出场水平',
+        'ko': 'Risk Appetite — 진입/청산 레벨',
+        'ar': 'Risk Appetite — مستويات الدخول/الخروج',
+    },
+    'mini_chart_entry_short': {
+        'en': 'Short entry',
+        'pt': 'Entrada short',
+        'es': 'Entrada short',
+        'fr': 'Entree short',
+        'de': 'Short-Einstieg',
+        'ja': 'ショートエントリー',
+        'zh': '做空进场',
+        'ko': '숏 진입',
+        'ar': 'دخول بيع (Short)',
+    },
+    'mini_chart_entry_long': {
+        'en': 'Long entry',
+        'pt': 'Entrada long',
+        'es': 'Entrada long',
+        'fr': 'Entree long',
+        'de': 'Long-Einstieg',
+        'ja': 'ロングエントリー',
+        'zh': '做多进场',
+        'ko': '롱 진입',
+        'ar': 'دخول شراء (Long)',
+    },
+    'mini_chart_exit': {
+        'en': 'Exit',
+        'pt': 'Saida',
+        'es': 'Salida',
+        'fr': 'Sortie',
+        'de': 'Ausstieg',
+        'ja': 'エグジット',
+        'zh': '出场',
+        'ko': '청산',
+        'ar': 'خروج',
+    },
+    'caption_click_bar_detail': {
+        'en': 'Click a bar below to see the OOS NAV and the indicator with entry/exit levels for that window.',
+        'pt': 'Clique numa barra abaixo para ver a cota OOS e o indicador com os niveis de entrada/saida daquela janela.',
+        'es': 'Haga clic en una barra abajo para ver el NAV OOS y el indicador con los niveles de entrada/salida de esa ventana.',
+        'fr': "Cliquez sur une barre ci-dessous pour voir la VL OOS et l'indicateur avec les niveaux d'entree/sortie de cette fenetre.",
+        'de': 'Klicken Sie unten auf einen Balken, um den OOS-NAV und den Indikator mit den Ein-/Ausstiegsniveaus fur dieses Fenster zu sehen.',
+        'ja': '下のバーをクリックすると、そのウィンドウのOOS NAVとエントリー/エグジットレベル付きの指標を確認できます。',
+        'zh': '点击下方的柱形可查看该窗口的OOS净值以及带有进出场水平的指标。',
+        'ko': '아래 막대를 클릭하면 해당 윈도우의 OOS NAV와 진입/청산 레벨이 표시된 지표를 확인할 수 있습니다.',
+        'ar': 'انقر على شريط أدناه لمعاينة NAV خارج العينة والمؤشر مع مستويات الدخول/الخروج لتلك النافذة.',
+    },
+    'button_view_chart': {
+        'en': '👁 View',
+        'pt': '👁 Ver',
+        'es': '👁 Ver',
+        'fr': '👁 Voir',
+        'de': '👁 Ansehen',
+        'ja': '👁 表示',
+        'zh': '👁 查看',
+        'ko': '👁 보기',
+        'ar': '👁 عرض',
+    },
+    'viewing_rank_label': {
+        'en': 'Showing detail for option #{rank}',
+        'pt': 'Mostrando detalhe da opcao #{rank}',
+        'es': 'Mostrando detalle de la opcion #{rank}',
+        'fr': "Affichage du detail de l'option #{rank}",
+        'de': 'Zeige Detail fur Option #{rank}',
+        'ja': 'オプション #{rank} の詳細を表示中',
+        'zh': '正在显示选项 #{rank} 的详情',
+        'ko': '옵션 #{rank}의 상세 정보 표시 중',
+        'ar': 'عرض تفاصيل الخيار #{rank}',
+    },
     'criterio1_title': {
         'en': '🏆 CRITERION 1 — Maximum Sharpe (OOS median)',
         'pt': '🏆 CRITERIO 1 — Maximo Sharpe (mediana OOS)',
@@ -1935,15 +2045,15 @@ TR = {
         'ar': 'استخدام',
     },
     'chart_title_sharpe_wf': {
-        'en': 'Walk-Forward OOS Sharpe — P{eh}/P{el} exit P{ex}',
-        'pt': 'Walk-Forward OOS Sharpe — P{eh}/P{el} saida P{ex}',
-        'es': 'Walk-Forward OOS Sharpe — P{eh}/P{el} salida P{ex}',
-        'fr': 'Walk-Forward OOS Sharpe — P{eh}/P{el} sortie P{ex}',
-        'de': 'Walk-Forward OOS Sharpe — P{eh}/P{el} Ausstieg P{ex}',
-        'ja': 'ウォークフォワード OOS シャープ — P{eh}/P{el} エグジットP{ex}',
-        'zh': '前向滚动 OOS 夏普 — P{eh}/P{el} 出场P{ex}',
-        'ko': '워크포워드 OOS 샤프 — P{eh}/P{el} 청산 P{ex}',
-        'ar': 'Walk-Forward OOS Sharpe — P{eh}/P{el} خروج P{ex}',
+        'en': '#{rank} Walk-Forward OOS Sharpe — P{eh}/P{el} exit P{ex}',
+        'pt': '#{rank} Walk-Forward OOS Sharpe — P{eh}/P{el} saida P{ex}',
+        'es': '#{rank} Walk-Forward OOS Sharpe — P{eh}/P{el} salida P{ex}',
+        'fr': '#{rank} Walk-Forward OOS Sharpe — P{eh}/P{el} sortie P{ex}',
+        'de': '#{rank} Walk-Forward OOS Sharpe — P{eh}/P{el} Ausstieg P{ex}',
+        'ja': '#{rank} ウォークフォワード OOS シャープ — P{eh}/P{el} エグジットP{ex}',
+        'zh': '#{rank} 前向滚动 OOS 夏普 — P{eh}/P{el} 出场P{ex}',
+        'ko': '#{rank} 워크포워드 OOS 샤프 — P{eh}/P{el} 청산 P{ex}',
+        'ar': '#{rank} Walk-Forward OOS Sharpe — P{eh}/P{el} خروج P{ex}',
     },
     'criterio2_title': {
         'en': '🛡 CRITERION 2 — Minimum Drawdown (median return > 0)',
@@ -1979,15 +2089,15 @@ TR = {
         'ar': 'وسيط DD: {v}',
     },
     'chart_title_dd_wf': {
-        'en': 'Walk-Forward OOS MaxDD — P{eh}/P{el} exit P{ex}',
-        'pt': 'Walk-Forward OOS MaxDD — P{eh}/P{el} saida P{ex}',
-        'es': 'Walk-Forward OOS MaxDD — P{eh}/P{el} salida P{ex}',
-        'fr': 'Walk-Forward OOS MaxDD — P{eh}/P{el} sortie P{ex}',
-        'de': 'Walk-Forward OOS MaxDD — P{eh}/P{el} Ausstieg P{ex}',
-        'ja': 'ウォークフォワード OOS 最大DD — P{eh}/P{el} エグジットP{ex}',
-        'zh': '前向滚动 OOS 最大DD — P{eh}/P{el} 出场P{ex}',
-        'ko': '워크포워드 OOS 최대DD — P{eh}/P{el} 청산 P{ex}',
-        'ar': 'Walk-Forward OOS MaxDD — P{eh}/P{el} خروج P{ex}',
+        'en': '#{rank} Walk-Forward OOS MaxDD — P{eh}/P{el} exit P{ex}',
+        'pt': '#{rank} Walk-Forward OOS MaxDD — P{eh}/P{el} saida P{ex}',
+        'es': '#{rank} Walk-Forward OOS MaxDD — P{eh}/P{el} salida P{ex}',
+        'fr': '#{rank} Walk-Forward OOS MaxDD — P{eh}/P{el} sortie P{ex}',
+        'de': '#{rank} Walk-Forward OOS MaxDD — P{eh}/P{el} Ausstieg P{ex}',
+        'ja': '#{rank} ウォークフォワード OOS 最大DD — P{eh}/P{el} エグジットP{ex}',
+        'zh': '#{rank} 前向滚动 OOS 最大DD — P{eh}/P{el} 出场P{ex}',
+        'ko': '#{rank} 워크포워드 OOS 최대DD — P{eh}/P{el} 청산 P{ex}',
+        'ar': '#{rank} Walk-Forward OOS MaxDD — P{eh}/P{el} خروج P{ex}',
     },
     'caption_click_use': {
         'en': "Click 'Use' to apply the percentiles to the Backtest and run the full result.",
@@ -2718,6 +2828,35 @@ def get_signals_oos_static(df, tH, tL, tM, excl_mask=None):
     return pos
 
 
+def build_walkforward_windows(idx, is_years=4, oos_months=12, step_months=6):
+    """Constroi as janelas rolantes (IS de is_years anos, OOS de oos_months meses,
+    avancando step_months meses por iteracao) usadas pelo walk-forward optimizer.
+    Extraido para funcao propria para poder ser reutilizado tanto no grid-search
+    quanto no recalculo de series detalhadas (cota/indicador) de um combo especifico."""
+    windows = []
+    start_date = idx[0]
+    end_date = idx[-1]
+    cur = start_date
+    while True:
+        is_end = cur + pd.DateOffset(years=is_years) - pd.DateOffset(days=1)
+        oos_start = is_end + pd.DateOffset(days=1)
+        oos_end = oos_start + pd.DateOffset(months=oos_months) - pd.DateOffset(days=1)
+        if oos_end > end_date:
+            break
+        is_mask_idx  = (idx >= cur) & (idx <= is_end)
+        oos_mask_idx = (idx >= oos_start) & (idx <= oos_end)
+        if is_mask_idx.sum() < 200 or oos_mask_idx.sum() < 20:
+            cur += pd.DateOffset(months=step_months)
+            continue
+        windows.append({
+            "label": oos_start.strftime("%Y-%m"),
+            "is_idx": is_mask_idx,
+            "oos_idx": oos_mask_idx,
+        })
+        cur += pd.DateOffset(months=step_months)
+    return windows
+
+
 def run_walkforward_optimizer(combined, excl_gfc, excl_covid, excl_custom,
                                excl_start, excl_end, invert_ativo, long_only,
                                flat_mode_label, progress_bar=None):
@@ -2729,32 +2868,7 @@ def run_walkforward_optimizer(combined, excl_gfc, excl_covid, excl_custom,
     n_combos = len(combos)  # 576
 
     idx = combined.index
-    IS_YEARS = 4
-    OOS_MONTHS = 12
-
-    # Build rolling windows (step = 6 months)
-    windows = []
-    start_date = idx[0]
-    end_date = idx[-1]
-    cur = start_date
-    while True:
-        is_end = cur + pd.DateOffset(years=IS_YEARS) - pd.DateOffset(days=1)
-        oos_start = is_end + pd.DateOffset(days=1)
-        oos_end = oos_start + pd.DateOffset(months=OOS_MONTHS) - pd.DateOffset(days=1)
-        if oos_end > end_date:
-            break
-        is_mask_idx  = (idx >= cur) & (idx <= is_end)
-        oos_mask_idx = (idx >= oos_start) & (idx <= oos_end)
-        if is_mask_idx.sum() < 200 or oos_mask_idx.sum() < 20:
-            cur += pd.DateOffset(months=6)
-            continue
-        windows.append({
-            "label": oos_start.strftime("%Y-%m"),
-            "is_idx": is_mask_idx,
-            "oos_idx": oos_mask_idx,
-        })
-        cur += pd.DateOffset(months=6)
-
+    windows = build_walkforward_windows(idx)
     if not windows:
         return None, []
 
@@ -2882,6 +2996,52 @@ def run_walkforward_optimizer(combined, excl_gfc, excl_covid, excl_custom,
 
     agg_df = pd.DataFrame(rows)
     return agg_df, detail_list
+
+
+def compute_window_series(combined, eh, el, ex, excl_gfc, excl_covid, excl_custom,
+                           excl_start, excl_end, invert_ativo, long_only):
+    """Recalcula, para um combo (eh, el, ex) ja escolhido, a serie OOS detalhada de
+    cada janela walk-forward: datas, cota (rebasada em 100), indicador, e os niveis
+    reais (tH/tL/tM) calibrados naquela janela IS. Usado para o popup de due diligence
+    visual ao clicar numa barra do grafico do optimizer — nao precisa ser calculado
+    para os 576 combos do grid-search, so para o melhor combo de cada criterio."""
+    idx = combined.index
+    windows = build_walkforward_windows(idx)
+    full_excl = build_excl_mask_arr(idx, excl_gfc, excl_covid, excl_custom, excl_start, excl_end)
+    out = []
+    for win in windows:
+        is_m, oos_m = win["is_idx"], win["oos_idx"]
+        df_is  = combined[is_m]
+        df_oos = combined[oos_m].copy()
+        excl_oos = full_excl[np.where(oos_m)[0]]
+
+        ind_is_clean = df_is["indicator"].dropna().values
+        tH = float(np.percentile(ind_is_clean, eh))
+        tL = float(np.percentile(ind_is_clean, el))
+        tM = float(np.percentile(ind_is_clean, ex))
+
+        if "asset" in df_oos.columns:
+            asset_oos = df_oos["asset"].pct_change().fillna(0).values
+        else:
+            asset_oos = np.zeros(len(df_oos))
+        if invert_ativo:
+            asset_oos = -asset_oos
+
+        pos_oos = get_signals_oos_static(df_oos, tH, tL, tM, excl_mask=excl_oos)
+        if long_only:
+            pos_oos = np.maximum(pos_oos, 0)
+
+        strat_ret = pos_oos[:-1] * asset_oos[1:]
+        curve = np.concatenate([[1.0], np.cumprod(1 + strat_ret)]) * 100.0
+
+        out.append({
+            "window": win["label"],
+            "dates": df_oos.index.strftime("%Y-%m-%d").tolist(),
+            "curve": curve.tolist(),
+            "indicator": df_oos["indicator"].tolist(),
+            "tH": tH, "tL": tL, "tM": tM,
+        })
+    return out
 
 
 with st.sidebar:
@@ -3034,7 +3194,7 @@ with st.sidebar:
     st.divider()
     run_btn = st.button(t("run_button"), type="primary", use_container_width=True)
     st.divider()
-    opt_btn = st.button(t("optimize_button"), type="secondary", use_container_width=True)
+    opt_btn = st.button(t("optimize_button"), type="secondary", use_container_width=True, help=t("help_optimizer"))
 
 # ─────────────────────────────────────────────────────────────────────────────
 # EXECUÇÃO
@@ -3579,14 +3739,18 @@ elif opt_btn or (not run_btn and st.session_state.get('opt_agg') is not None):
         prog.empty()
         if agg_df is None or agg_df.empty:
             st.warning(t("warning_insufficient_wf")); st.stop()
-        st.session_state["opt_agg"]    = agg_df
-        st.session_state["opt_detail"] = detail_list
-        st.session_state["opt_ticker"] = ticker_display2
+        st.session_state["opt_agg"]      = agg_df
+        st.session_state["opt_detail"]   = detail_list
+        st.session_state["opt_ticker"]   = ticker_display2
+        st.session_state["opt_combined"] = combined2
+        st.session_state["opt_invert"]   = invert_ativo2
         ticker_display = ticker_display2
     else:
         agg_df         = st.session_state["opt_agg"]
         detail_list    = st.session_state["opt_detail"]
         ticker_display = st.session_state.get("opt_ticker", ticker)
+        combined2      = st.session_state.get("opt_combined")
+        invert_ativo2  = st.session_state.get("opt_invert", ticker.endswith("~inv"))
 
     if agg_df is None or agg_df.empty:
         st.warning(t("warning_insufficient_wf")); st.stop()
@@ -3607,7 +3771,39 @@ elif opt_btn or (not run_btn and st.session_state.get('opt_agg') is not None):
                 return d
         return None
 
-    def _wf_bar(detail, metric, title, col_pos="#FF7700", col_neg="#CC4444"):
+    def _render_window_popup(ws, chart_key):
+        with st.container(border=True):
+            st.markdown(
+                f"<span style='color:#FF7700;font-size:0.82rem;font-weight:bold;'>"
+                f"{t('window_detail_title', window=ws['window'])}</span>",
+                unsafe_allow_html=True
+            )
+            dates = pd.to_datetime(ws["dates"])
+            mini_layout = {**BBG_LAYOUT, "margin": dict(t=30, b=20, l=35, r=10)}
+            c_eq, c_ind = st.columns(2)
+            with c_eq:
+                fig_eq = go.Figure()
+                fig_eq.add_trace(go.Scatter(x=dates, y=ws["curve"], mode="lines",
+                                             line=dict(color="#FF7700", width=1.5)))
+                fig_eq.update_layout(height=220, title=t("mini_chart_equity_title"),
+                                      showlegend=False, **mini_layout)
+                st.plotly_chart(fig_eq, use_container_width=True, theme=None, key=f"mini_eq_{chart_key}_{ws['window']}")
+            with c_ind:
+                fig_ind = go.Figure()
+                fig_ind.add_trace(go.Scatter(x=dates, y=ws["indicator"], mode="lines",
+                                              line=dict(color="#4A90D9", width=1.2)))
+                fig_ind.add_hline(y=ws["tH"], line_dash="dot", line_color="#CC4444",
+                                   annotation_text=t("mini_chart_entry_short"), annotation_font_size=9)
+                fig_ind.add_hline(y=ws["tL"], line_dash="dot", line_color="#4ABF4A",
+                                   annotation_text=t("mini_chart_entry_long"), annotation_font_size=9)
+                fig_ind.add_hline(y=ws["tM"], line_dash="dash", line_color="#999999",
+                                   annotation_text=t("mini_chart_exit"), annotation_font_size=9)
+                fig_ind.update_layout(height=220, title=t("mini_chart_indicator_title"),
+                                       showlegend=False, **mini_layout)
+                st.plotly_chart(fig_ind, use_container_width=True, theme=None, key=f"mini_ind_{chart_key}_{ws['window']}")
+
+    def _wf_bar(detail, metric, title, col_pos="#FF7700", col_neg="#CC4444",
+                series_data=None, chart_key="wf_bar"):
         wdf = pd.DataFrame(detail["windows"])
         vals = wdf[metric].tolist()
         colors = [col_pos if v >= 0 else col_neg for v in vals]
@@ -3617,7 +3813,16 @@ elif opt_btn or (not run_btn and st.session_state.get('opt_agg') is not None):
         layout_wf = {**BBG_LAYOUT, "margin": dict(t=36, b=20, l=20, r=20)}
         fig_w.update_layout(height=200, title=title, showlegend=False, **layout_wf)
         fig_w.update_xaxes(tickangle=-45, tickfont=dict(size=9))
-        st.plotly_chart(fig_w, use_container_width=True)
+        if series_data is not None:
+            event = st.plotly_chart(fig_w, use_container_width=True, theme=None, on_select="rerun",
+                                     selection_mode="points", key=chart_key)
+            pts = (event or {}).get("selection", {}).get("points", [])
+            if pts:
+                pidx = pts[0].get("point_index")
+                if pidx is not None and 0 <= pidx < len(series_data):
+                    _render_window_popup(series_data[pidx], chart_key)
+        else:
+            st.plotly_chart(fig_w, use_container_width=True, theme=None)
 
     # ── CRITERIO 1: Maximo Sharpe ─────────────────────────────────────────
     st.markdown(
@@ -3628,7 +3833,7 @@ elif opt_btn or (not run_btn and st.session_state.get('opt_agg') is not None):
     st.caption(t("caption_trimmed_core"))
     top_sh = agg_df.sort_values("avg_sharpe", ascending=False).head(5).reset_index(drop=True)
     for rank, row in top_sh.iterrows():
-        c_info, c_btn = st.columns([5, 1])
+        c_info, c_btn, c_view = st.columns([5, 1, 1])
         _eh_s, _el_s, _ex_s = f"{row['eh']:g}", f"{row['el']:g}", f"{row['ex']:g}"
         _sh_s = f"{row['avg_sharpe']:.3f}"
         _core60_sh = t('row_core60', med=f"{row['sh_trim_med']:.3f}", min=f"{row['sh_trim_min']:.3f}", max=f"{row['sh_trim_max']:.3f}")
@@ -3651,12 +3856,23 @@ elif opt_btn or (not run_btn and st.session_state.get('opt_agg') is not None):
             st.session_state["_new_ex"] = float(row["ex"])
             st.session_state["run_after_usar"] = True
             st.rerun()
+        if c_view.button(t("button_view_chart"), key=f"view_sh_{rank}"):
+            st.session_state["wf_view_rank_sh"] = rank
 
-    best_sh = top_sh.iloc[0]
+    sel_rank_sh = min(st.session_state.get("wf_view_rank_sh", 0), len(top_sh) - 1)
+    best_sh = top_sh.iloc[sel_rank_sh]
     det_sh  = _get_detail(best_sh["eh"], best_sh["el"], best_sh["ex"])
     if det_sh:
+        series_sh = compute_window_series(
+            combined2, best_sh["eh"], best_sh["el"], best_sh["ex"],
+            excl_gfc, excl_covid, excl_custom, excl_start, excl_end,
+            invert_ativo2, long_only,
+        )
+        st.caption(t("viewing_rank_label", rank=sel_rank_sh + 1))
+        st.caption(t("caption_click_bar_detail"))
         _wf_bar(det_sh, "sharpe",
-                t("chart_title_sharpe_wf", eh=f"{best_sh['eh']:g}", el=f"{best_sh['el']:g}", ex=f"{best_sh['ex']:g}"))
+                t("chart_title_sharpe_wf", rank=sel_rank_sh + 1, eh=f"{best_sh['eh']:g}", el=f"{best_sh['el']:g}", ex=f"{best_sh['ex']:g}"),
+                series_data=series_sh, chart_key=f"wf_bar_sharpe_r{sel_rank_sh}")
 
     st.divider()
 
@@ -3673,7 +3889,7 @@ elif opt_btn or (not run_btn and st.session_state.get('opt_agg') is not None):
     else:
         top_dd = agg_pos.sort_values("avg_dd", ascending=False).head(5).reset_index(drop=True)
         for rank, row in top_dd.iterrows():
-            c_info, c_btn = st.columns([5, 1])
+            c_info, c_btn, c_view = st.columns([5, 1, 1])
             _eh_s, _el_s, _ex_s = f"{row['eh']:g}", f"{row['el']:g}", f"{row['ex']:g}"
             _dd_s = f"{row['avg_dd']:.1%}"
             _core60_dd = t('row_core60', med=f"{row['dd_trim_med']:.1%}", min=f"{row['dd_trim_min']:.1%}", max=f"{row['dd_trim_max']:.1%}")
@@ -3696,13 +3912,24 @@ elif opt_btn or (not run_btn and st.session_state.get('opt_agg') is not None):
                 st.session_state["_new_ex"] = float(row["ex"])
                 st.session_state["run_after_usar"] = True
                 st.rerun()
+            if c_view.button(t("button_view_chart"), key=f"view_dd_{rank}"):
+                st.session_state["wf_view_rank_dd"] = rank
 
-        best_dd = top_dd.iloc[0]
+        sel_rank_dd = min(st.session_state.get("wf_view_rank_dd", 0), len(top_dd) - 1)
+        best_dd = top_dd.iloc[sel_rank_dd]
         det_dd  = _get_detail(best_dd["eh"], best_dd["el"], best_dd["ex"])
         if det_dd:
+            series_dd = compute_window_series(
+                combined2, best_dd["eh"], best_dd["el"], best_dd["ex"],
+                excl_gfc, excl_covid, excl_custom, excl_start, excl_end,
+                invert_ativo2, long_only,
+            )
+            st.caption(t("viewing_rank_label", rank=sel_rank_dd + 1))
+            st.caption(t("caption_click_bar_detail"))
             _wf_bar(det_dd, "dd",
-                    t("chart_title_dd_wf", eh=f"{best_dd['eh']:g}", el=f"{best_dd['el']:g}", ex=f"{best_dd['ex']:g}"),
-                    col_pos="#4A90D9", col_neg="#4A90D9")
+                    t("chart_title_dd_wf", rank=sel_rank_dd + 1, eh=f"{best_dd['eh']:g}", el=f"{best_dd['el']:g}", ex=f"{best_dd['ex']:g}"),
+                    col_pos="#4A90D9", col_neg="#4A90D9",
+                    series_data=series_dd, chart_key=f"wf_bar_dd_r{sel_rank_dd}")
 
     st.caption(t("caption_click_use"))
 
