@@ -221,6 +221,45 @@ st.markdown("""
   [data-baseweb="select"] ul,
   [data-baseweb="menu"] { background-color: #1a1a1a !important; border: 1px solid #444 !important; }
   [data-baseweb="menu"] li:hover { background-color: #333 !important; }
+
+  /* ── Tooltips (icone "?" de ajuda e help= dos botoes) — independem do
+     tema dark carregado via config.toml; forcamos fundo escuro aqui para
+     garantir legibilidade mesmo se o tema padrao (claro) for aplicado ── */
+  [data-baseweb="tooltip"],
+  div[role="tooltip"],
+  [data-testid="stTooltipContent"] {
+      background-color: #1a1a1a !important;
+      color: #e0e0e0 !important;
+      border: 1px solid #444444 !important;
+  }
+  [data-baseweb="tooltip"] *,
+  div[role="tooltip"] *,
+  [data-testid="stTooltipContent"] * {
+      color: #e0e0e0 !important;
+      background-color: transparent !important;
+  }
+  /* ── Garante laranja BBG em radio/checkbox/slider/select_slider mesmo
+     que o tema (config.toml) nao seja aplicado e caia no vermelho padrao
+     do Streamlit ── */
+  [data-baseweb="radio"] div[aria-checked="true"] svg,
+  [data-testid="stCheckbox"] svg,
+  [role="radio"][aria-checked="true"] { fill: #FF7700 !important; }
+  [role="radio"][aria-checked="true"] > div:first-child,
+  [data-baseweb="radio"] div[aria-checked="true"] {
+      border-color: #FF7700 !important;
+  }
+  [role="radio"][aria-checked="true"] > div:first-child::before {
+      background-color: #FF7700 !important;
+  }
+  [data-testid="stSlider"] [role="slider"],
+  [data-baseweb="slider"] [role="slider"] {
+      background-color: #FF7700 !important;
+      border-color: #FF7700 !important;
+  }
+  [data-testid="stSlider"] div[data-testid="stTickBar"] + div > div,
+  [data-baseweb="slider"] > div > div:nth-child(2) {
+      background-color: #FF7700 !important;
+  }
 </style>
 """, unsafe_allow_html=True)
 
@@ -2569,17 +2608,28 @@ def load_risk_appetite():
 
 @st.cache_data
 def download_asset(ticker, start, end):
-    try:
-        real_ticker = ticker.replace("~inv", "")
-        data = yf.download(real_ticker, start=start, end=end, progress=False, auto_adjust=True)
-        if data.empty: return None
-        close = data[["Close"]].copy(); close.columns = ["asset"]
-        close.index = pd.to_datetime(close.index)
-        if hasattr(close.index,"tz") and close.index.tz is not None:
-            close.index = close.index.tz_localize(None)
-        return close
-    except Exception as e:
-        st.error(t("error_download_failed", ticker=ticker, err=e)); return None
+    import time
+    real_ticker = ticker.replace("~inv", "")
+    last_err = None
+    # Retry com backoff: o Yahoo Finance ocasionalmente devolve "not found"
+    # ou erro de rate-limit em IPs compartilhados (ex.: Streamlit Cloud),
+    # mesmo para tickers validos que funcionam normalmente em outra tentativa.
+    for attempt in range(3):
+        try:
+            data = yf.download(real_ticker, start=start, end=end, progress=False, auto_adjust=True)
+            if data.empty:
+                last_err = "empty"
+                time.sleep(1.5 * (attempt + 1))
+                continue
+            close = data[["Close"]].copy(); close.columns = ["asset"]
+            close.index = pd.to_datetime(close.index)
+            if hasattr(close.index,"tz") and close.index.tz is not None:
+                close.index = close.index.tz_localize(None)
+            return close
+        except Exception as e:
+            last_err = e
+            time.sleep(1.5 * (attempt + 1))
+    st.error(t("error_download_failed", ticker=ticker, err=last_err)); return None
 
 # ─────────────────────────────────────────────────────────────────────────────
 # BACKTEST
