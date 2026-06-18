@@ -3196,6 +3196,12 @@ with st.sidebar:
     st.divider()
     opt_btn = st.button(t("optimize_button"), type="secondary", use_container_width=True, help=t("help_optimizer"))
 
+    st.markdown(
+        f"<div style='text-align:center;color:#3a3a3a;font-size:0.6rem;margin-top:8px;'>"
+        f"Streamlit v{st.__version__}</div>",
+        unsafe_allow_html=True
+    )
+
 # ─────────────────────────────────────────────────────────────────────────────
 # EXECUÇÃO
 # ─────────────────────────────────────────────────────────────────────────────
