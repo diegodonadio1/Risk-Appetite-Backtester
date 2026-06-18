@@ -9,6 +9,7 @@ Risk Appetite Backtester — v6
 """
 
 import warnings
+import json
 warnings.filterwarnings("ignore")
 
 import streamlit as st
@@ -164,6 +165,24 @@ st.markdown("""
       color: #777777 !important;
       border: 1px solid #333333 !important;
   }
+  /* ── Run Backtest e Optimizer — frame laranja sempre visivel; fundo so
+     fica laranja no hover (momento em que o tooltip de ajuda aparece) ── */
+  .st-key-run_backtest_btn button,
+  .st-key-optimize_btn button {
+      background-color: #111111 !important;
+      color: #FF7700 !important;
+      border: 1.5px solid #FF7700 !important;
+      font-weight: bold !important;
+      font-family: 'Courier New', monospace !important;
+      letter-spacing: 1px;
+      transition: background-color 0.15s ease, color 0.15s ease;
+  }
+  .st-key-run_backtest_btn button:hover,
+  .st-key-optimize_btn button:hover {
+      background-color: #FF7700 !important;
+      color: #000000 !important;
+      border-color: #FF7700 !important;
+  }
   /* ── Métricas ── */
   [data-testid="stMetric"] {
       background-color: #0d0d0d !important;
@@ -278,9 +297,38 @@ st.markdown("""
       background-color: #FF7700 !important;
       border-color: #FF7700 !important;
   }
-  [data-testid="stSlider"] div[data-testid="stTickBar"] + div > div,
-  [data-baseweb="slider"] > div > div:nth-child(2) {
-      background-color: #FF7700 !important;
+  /* Labels min/max da escala (ex.: P80 ... P97.5, ou 0 ... 300 no FX Hedge)
+     devem ficar neutros, sem caixa de fundo — igual ao numero da esquerda. */
+  [data-testid="stTickBar"],
+  [data-testid="stTickBarMin"],
+  [data-testid="stTickBarMax"],
+  [data-testid="stTickBar"] > div,
+  [data-testid="stTickBar"] * {
+      background-color: transparent !important;
+      color: #888888 !important;
+  }
+
+  /* ── O icone "?" de ajuda (stTooltipIcon/stTooltipHoverTarget) fica
+     dentro do mesmo container de widgets como checkbox/radio. As regras
+     acima que forcam laranja no svg/fundo desses widgets (ex.:
+     [data-testid="stCheckbox"] svg) acabam "vazando" para o svg do icone
+     de ajuda vizinho, pintando uma bolinha laranja nele. Resetamos aqui,
+     depois das regras anteriores na cascata, para manter o "?" neutro
+     (cinza, sem bolinha de fundo) em todos os widgets — igual ao que ja
+     ocorre nativamente no date_input (ex.: IS Start). ── */
+  [data-testid="stTooltipIcon"],
+  [data-testid="stTooltipHoverTarget"] {
+      background-color: transparent !important;
+  }
+  [data-testid="stTooltipIcon"] svg,
+  [data-testid="stTooltipHoverTarget"] svg {
+      fill: #808080 !important;
+      background-color: transparent !important;
+  }
+  [data-testid="stTooltipIcon"] button,
+  [data-testid="stTooltipHoverTarget"] button {
+      background-color: transparent !important;
+      border: none !important;
   }
 </style>
 """, unsafe_allow_html=True)
@@ -1875,15 +1923,37 @@ TR = {
         'ar': 'OPTIMIZER &nbsp;|&nbsp; {ticker} &nbsp;|&nbsp; Walk-Forward 4yr IS / 12m OOS &nbsp;|&nbsp; {n} نافذة &nbsp;|&nbsp; 576 توليفة (8×8 دخول، 9 خروج)',
     },
     'help_optimizer': {
-        'en': 'Runs a walk-forward test: for each 4-year In-Sample window, tests all entry/exit percentile combinations of the indicator and measures the result in the next 12 months Out-of-Sample, rolling forward 6 months at a time. Ranks the 576 combos by 2 criteria: (1) highest median Sharpe across OOS windows; (2) lowest median Drawdown among combos with positive median return. Click a bar in the window chart below to inspect the OOS NAV and indicator for that period.',
-        'pt': 'Roda um teste walk-forward: para cada janela de 4 anos In-Sample, testa todas as combinacoes de percentis de entrada/saida do indicador e mede o resultado nos 12 meses seguintes Out-of-Sample, avancando 6 em 6 meses. Ranqueia os 576 combos por 2 criterios: (1) maior Sharpe mediano nas janelas OOS; (2) menor Drawdown mediano entre os combos com retorno mediano positivo. Clique numa barra do grafico de janelas abaixo para ver a cota e o indicador daquele periodo.',
-        'es': 'Ejecuta una prueba walk-forward: para cada ventana de 4 anos In-Sample, prueba todas las combinaciones de percentiles de entrada/salida del indicador y mide el resultado en los siguientes 12 meses Out-of-Sample, avanzando 6 meses a la vez. Clasifica las 576 combinaciones por 2 criterios: (1) mayor Sharpe mediano en las ventanas OOS; (2) menor Drawdown mediano entre las combinaciones con retorno mediano positivo. Haga clic en una barra del grafico de ventanas abajo para ver el NAV y el indicador OOS de ese periodo.',
-        'fr': "Execute un test walk-forward : pour chaque fenetre In-Sample de 4 ans, teste toutes les combinaisons de percentiles d'entree/sortie de l'indicateur et mesure le resultat sur les 12 mois suivants Out-of-Sample, en avancant de 6 mois a la fois. Classe les 576 combinaisons selon 2 criteres : (1) le Sharpe median le plus eleve sur les fenetres OOS ; (2) le Drawdown median le plus faible parmi les combinaisons a rendement median positif. Cliquez sur une barre du graphique des fenetres ci-dessous pour voir la VL et l'indicateur OOS de cette periode.",
-        'de': 'Fuhrt einen Walk-Forward-Test durch: Fur jedes 4-jaehrige In-Sample-Fenster werden alle Eintritts-/Austritts-Perzentil-Kombinationen des Indikators getestet und das Ergebnis in den folgenden 12 Monaten Out-of-Sample gemessen, wobei jeweils 6 Monate vorgeruckt wird. Die 576 Kombinationen werden nach 2 Kriterien eingestuft: (1) hoechster Median-Sharpe ueber die OOS-Fenster; (2) niedrigster Median-Drawdown unter den Kombinationen mit positivem Median-Ertrag. Klicken Sie auf einen Balken im Fenster-Diagramm unten, um den OOS-NAV und den Indikator fur diesen Zeitraum zu sehen.',
-        'ja': '各4年間のIn-Sampleウィンドウについて、指標のすべてのエントリー/エグジットパーセンタイル組み合わせをテストし、その後の12か月間のOut-of-Sample結果を6か月ごとにローリングして測定するウォークフォワードテストを実行します。576通りの組み合わせを2つの基準でランク付けします: (1) OOSウィンドウ全体での中央値Sharpeが最も高い、(2) 中央値リターンが正の組み合わせの中で中央値Drawdownが最も低い。下のウィンドウチャートのバーをクリックすると、その期間のOOS NAVと指標を確認できます。',
-        'zh': '运行一个滚动前进测试：对每个4年的样本内(In-Sample)窗口，测试指标的所有进场/出场百分位组合，并测量随后12个月样本外(Out-of-Sample)的结果，每次滚动前进6个月。按2个标准对576种组合进行排名：(1) 在OOS窗口中具有最高的中位数Sharpe；(2) 在中位数收益为正的组合中具有最低的中位数回撤。点击下方窗口图表中的柱形可查看该时段的OOS净值和指标。',
-        'ko': '각 4년 In-Sample 윈도우에 대해 지표의 모든 진입/청산 백분위 조합을 테스트하고, 6개월씩 롤링하며 이후 12개월 Out-of-Sample 결과를 측정하는 워크포워드 테스트를 실행합니다. 576개 조합을 2가지 기준으로 순위를 매깁니다: (1) OOS 윈도우 전체에서 가장 높은 중간값 샤프 비율; (2) 중간값 수익률이 양수인 조합 중 가장 낮은 중간값 드로다운. 아래 윈도우 차트의 막대를 클릭하면 해당 기간의 OOS NAV와 지표를 확인할 수 있습니다.',
-        'ar': 'يشغل اختبار walk-forward: لكل نافذة In-Sample مدتها 4 سنوات، يختبر جميع تركيبات النسب المئوية للدخول/الخروج للمؤشر ويقيس النتيجة في الأشهر الـ12 التالية Out-of-Sample، بالتقدم 6 أشهر في كل مرة. يصنف 576 تركيبة وفق معيارين: (1) أعلى متوسط Sharpe عبر نوافذ OOS؛ (2) أدنى متوسط Drawdown بين التركيبات ذات العائد المتوسط الإيجابي. انقر على شريط في مخطط النوافذ أدناه لمعاينة NAV والمؤشر OOS لتلك الفترة.',
+        'en': 'Runs a walk-forward test: for each 4-year In-Sample window, computes the percentile and FREEZES the numeric value it represents (e.g. P95 = 0.65) for the entire next 12-month Out-of-Sample period, rolling forward 6 months at a time. Tests the 576 entry/exit percentile combos and ranks them by 2 criteria: (1) highest median Sharpe across OOS windows; (2) lowest median Drawdown among combos with positive median return. Note: this frozen-value approach differs from RUN BACKTEST, which recalculates the percentile every day in the OOS (see the Use button). Click a bar in the window chart below to inspect the OOS NAV and indicator for that period.',
+        'pt': "Roda um teste walk-forward: para cada janela de 4 anos In-Sample, calcula o percentil e CONGELA o valor numerico que ele representa (ex.: P95 = 0,65) por todo o periodo de 12 meses Out-of-Sample seguinte, avancando 6 em 6 meses. Testa as 576 combinacoes de percentis de entrada/saida e ranqueia por 2 criterios: (1) maior Sharpe mediano nas janelas OOS; (2) menor Drawdown mediano entre os combos com retorno mediano positivo. Atencao: esse valor congelado e diferente do RUN BACKTEST, que recalcula o percentil todo dia no OOS (veja o botao Usar). Clique numa barra do grafico de janelas abaixo para ver a cota e o indicador daquele periodo.",
+        'es': "Ejecuta una prueba walk-forward: para cada ventana de 4 anos In-Sample, calcula el percentil y CONGELA el valor numerico que representa (ej.: P95 = 0,65) durante los 12 meses siguientes de Out-of-Sample, avanzando 6 meses a la vez. Prueba las 576 combinaciones de percentiles de entrada/salida y las clasifica por 2 criterios: (1) mayor Sharpe mediano en las ventanas OOS; (2) menor Drawdown mediano entre las combinaciones con retorno mediano positivo. Atencion: este valor congelado es diferente del RUN BACKTEST, que recalcula el percentil todos los dias en el OOS (vea el boton Usar). Haga clic en una barra del grafico de ventanas abajo para ver el NAV y el indicador OOS de ese periodo.",
+        'fr': "Execute un test walk-forward : pour chaque fenetre In-Sample de 4 ans, calcule le percentile et FIGE la valeur numerique qu'il represente (ex. : P95 = 0,65) pour les 12 mois suivants d'Out-of-Sample, en avancant de 6 mois a la fois. Teste les 576 combinaisons de percentiles d'entree/sortie et les classe selon 2 criteres : (1) le Sharpe median le plus eleve sur les fenetres OOS ; (2) le Drawdown median le plus faible parmi les combinaisons a rendement median positif. Attention : cette valeur figee differe de RUN BACKTEST, qui recalcule le percentile chaque jour dans l'OOS (voir le bouton Utiliser). Cliquez sur une barre du graphique des fenetres ci-dessous pour voir la VL et l'indicateur OOS de cette periode.",
+        'de': "Fuhrt einen Walk-Forward-Test durch: Fur jedes 4-jaehrige In-Sample-Fenster wird das Perzentil berechnet und der dargestellte Zahlenwert (z. B. P95 = 0,65) fuer die gesamten folgenden 12 Monate Out-of-Sample EINGEFROREN, wobei jeweils 6 Monate vorgeruckt wird. Testet die 576 Eintritts-/Austritts-Perzentil-Kombinationen und stuft sie nach 2 Kriterien ein: (1) hoechster Median-Sharpe ueber die OOS-Fenster; (2) niedrigster Median-Drawdown unter den Kombinationen mit positivem Median-Ertrag. Hinweis: dieser eingefrorene Wert unterscheidet sich von RUN BACKTEST, das das Perzentil jeden Tag im OOS neu berechnet (siehe Verwenden-Button). Klicken Sie auf einen Balken im Fenster-Diagramm unten, um den OOS-NAV und den Indikator fur diesen Zeitraum zu sehen.",
+        'ja': '各4年間のIn-Sampleウィンドウについてパーセンタイルを計算し、その数値（例：P95 = 0.65）を次の12か月間のOut-of-Sample期間全体で固定し、6か月ごとにローリングするウォークフォワードテストを実行します。576通りのエントリー/エグジットパーセンタイル組み合わせをテストし、2つの基準でランク付けします: (1) OOSウィンドウ全体での中央値Sharpeが最も高い、(2) 中央値リターンが正の組み合わせの中で中央値Drawdownが最も低い。注意：この固定値方式は、OOS内で毎日パーセンタイルを再計算するRUN BACKTESTの方法とは異なります（「使用」ボタン参照）。下のウィンドウチャートのバーをクリックすると、その期間のOOS NAVと指標を確認できます。',
+        'zh': '运行一个滚动前进测试：对每个4年的样本内(In-Sample)窗口，计算百分位并将其代表的数值（例如P95 = 0.65）在随后12个月的样本外(Out-of-Sample)期间全程冻结，每次滚动前进6个月。测试576种进场/出场百分位组合，并按2个标准排名：(1) 在OOS窗口中具有最高的中位数Sharpe；(2) 在中位数收益为正的组合中具有最低的中位数回撤。注意：这种冻结数值的方法与RUN BACKTEST不同，后者在OOS期间每天重新计算百分位（参见"使用"按钮）。点击下方窗口图表中的柱形可查看该时段的OOS净值和指标。',
+        'ko': '워크포워드 테스트를 실행합니다: 각 4년 In-Sample 윈도우에 대해 백분위수를 계산하고, 그것이 나타내는 수치 값(예: P95 = 0.65)을 다음 12개월 Out-of-Sample 기간 전체 동안 고정한 후, 6개월씩 롤링합니다. 576개의 진입/청산 백분위수 조합을 테스트하고 2가지 기준으로 순위를 매깁니다: (1) OOS 윈도우 전체에서 가장 높은 중간값 Sharpe; (2) 중간값 수익률이 양수인 조합 중 가장 낮은 중간값 Drawdown. 참고: 이 고정값 방식은 OOS에서 매일 백분위수를 재계산하는 RUN BACKTEST의 방법과 다릅니다(\'사용\' 버튼 참조). 아래 윈도우 차트의 막대를 클릭하면 해당 기간의 OOS NAV와 지표를 확인할 수 있습니다.',
+        'ar': 'يُشغّل اختبار Walk-Forward: لكل نافذة In-Sample مدتها 4 سنوات، يُحسب المئين ويتم تجميد القيمة الرقمية التي يمثلها (مثل P95 = 0.65) طوال فترة الـ 12 شهرًا التالية من Out-of-Sample، مع التقدم 6 أشهر في كل مرة. يختبر 576 توليفة من مئينات الدخول/الخروج ويُصنّفها وفق معيارين: (1) أعلى Sharpe متوسط عبر نوافذ OOS؛ (2) أدنى Drawdown متوسط بين التوليفات ذات العائد المتوسط الإيجابي. ملاحظة: هذه القيمة المجمّدة تختلف عن الطريقة المستخدمة في RUN BACKTEST، التي تُعيد حساب المئين كل يوم في OOS (راجع زر \'استخدام\'). انقر على شريط في مخطط النوافذ أدناه لعرض NAV والمؤشر لتلك الفترة.',
+    },
+    'help_run_backtest': {
+        'en': "Runs the backtest using the EXPANDING method: the percentile threshold is recalculated every day in the Out-of-Sample period, using all data available up to (but not including) that day -- never the future. This is different from the Optimizer, which freezes one percentile-implied value for the whole 12-month OOS window. This is the method used in live trading and is what runs when you click 'Use'.",
+        'pt': "Roda o backtest usando o metodo EXPANDING: o limiar do percentil e recalculado todo dia no periodo Out-of-Sample, usando todos os dados disponiveis at\u00e9 (mas nao incluindo) aquele dia -- nunca o futuro. Isso e diferente do Optimizer, que congela um unico valor de percentil para toda a janela de 12 meses OOS. Este e o metodo usado na operacao real e e o que roda quando vc clica em 'Usar'.",
+        'es': "Ejecuta el backtest usando el metodo EXPANDING: el umbral del percentil se recalcula todos los dias en el periodo Out-of-Sample, usando todos los datos disponibles hasta (pero sin incluir) ese dia -- nunca el futuro. Esto es diferente del Optimizer, que congela un unico valor de percentil para toda la ventana de 12 meses OOS. Este es el metodo usado en la operacion real y es el que se ejecuta al hacer clic en 'Usar'.",
+        'fr': "Execute le backtest avec la methode EXPANDING : le seuil du percentile est recalcule chaque jour dans la periode Out-of-Sample, en utilisant toutes les donnees disponibles jusqu'a (mais sans inclure) ce jour -- jamais le futur. C'est different de l'Optimizer, qui fige une seule valeur de percentile pour toute la fenetre de 12 mois OOS. C'est la methode utilisee en trading reel, et c'est elle qui s'execute quand vous cliquez sur 'Utiliser'.",
+        'de': "Fuhrt den Backtest mit der EXPANDING-Methode aus: Der Perzentil-Schwellenwert wird jeden Tag im Out-of-Sample-Zeitraum neu berechnet, unter Verwendung aller bis zu diesem Tag (aber nicht einschliesslich) verfugbaren Daten -- niemals der Zukunft. Das unterscheidet sich vom Optimizer, der einen einzigen Perzentilwert fur das gesamte 12-Monats-OOS-Fenster einfriert. Dies ist die im Live-Handel verwendete Methode und wird beim Klicken auf 'Verwenden' ausgefuhrt.",
+        'ja': '拡張(EXPANDING)方式でバックテストを実行します。パーセンタイルの閾値は、Out-of-Sample期間中、その日までに（その日を含まず）利用可能な全データを使って毎日再計算されます。将来のデータは使用しません。これはOptimizerとは異なり、Optimizerは12か月のOOSウィンドウ全体で1つのパーセンタイル値を固定します。これは実際の運用で使われる方式であり、「使用」をクリックした際に実行される方式です。',
+        'zh': '使用扩展(EXPANDING)方法运行回测：百分位阈值在样本外(Out-of-Sample)期间每天重新计算，使用截至（但不包括）当天的所有可用数据——绝不使用未来数据。这与Optimizer不同，后者在整个12个月的OOS窗口中冻结单一百分位数值。这是实盘交易中使用的方法，也是点击"使用"时运行的方法。',
+        'ko': 'EXPANDING(확장) 방식으로 백테스트를 실행합니다: 백분위수 임계값은 Out-of-Sample 기간 동안 매일, 해당일까지(해당일은 제외) 사용 가능한 모든 데이터를 사용하여 재계산됩니다 -- 미래 데이터는 절대 사용하지 않습니다. 이는 12개월 OOS 윈도우 전체에 대해 하나의 백분위수 값을 고정하는 Optimizer와는 다릅니다. 이것은 실제 운용에서 사용되는 방법이며, \'사용\'을 클릭하면 실행되는 방법입니다.',
+        'ar': 'يُشغّل الاختبار الخلفي باستخدام طريقة EXPANDING: يُعاد حساب عتبة المئين كل يوم في فترة Out-of-Sample، باستخدام جميع البيانات المتاحة حتى ذلك اليوم (وليس بما في ذلك) -- وليس المستقبل أبدًا. يختلف هذا عن Optimizer، الذي يجمّد قيمة مئين واحدة لكامل نافذة الـ 12 شهرًا من OOS. هذه هي الطريقة المستخدمة في التداول الفعلي، وهي ما يتم تشغيله عند النقر على \'استخدام\'.',
+    },
+    'help_button_use': {
+        'en': "Clicking 'Use' will run the final backtest using the EXPANDING methodology from RUN BACKTEST (daily recalculation of the percentile in the OOS) -- not the Optimizer's frozen-value method. Results may differ from what you saw in the Optimizer's OOS windows above.",
+        'pt': "Ao clicar em 'Usar', o backtest final sera rodado com a metodologia EXPANDING do RUN BACKTEST (recalculo diario do percentil no OOS) -- nao o metodo de valor congelado do Optimizer. Os resultados podem ser diferentes do que vc viu nas janelas OOS do Optimizer acima.",
+        'es': "Al hacer clic en 'Usar', el backtest final se ejecutara con la metodologia EXPANDING de RUN BACKTEST (recalculo diario del percentil en el OOS) -- no el metodo de valor congelado del Optimizer. Los resultados pueden diferir de lo que vio en las ventanas OOS del Optimizer arriba.",
+        'fr': "En cliquant sur 'Utiliser', le backtest final sera execute avec la methodologie EXPANDING de RUN BACKTEST (recalcul quotidien du percentile dans l'OOS) -- pas la methode de valeur figee de l'Optimizer. Les resultats peuvent differer de ce que vous avez vu dans les fenetres OOS de l'Optimizer ci-dessus.",
+        'de': "Beim Klicken auf 'Verwenden' wird der finale Backtest mit der EXPANDING-Methodik von RUN BACKTEST ausgefuhrt (tagliche Neuberechnung des Perzentils im OOS) -- nicht mit der Methode des eingefrorenen Werts des Optimizers. Die Ergebnisse konnen von dem abweichen, was Sie oben in den OOS-Fenstern des Optimizers gesehen haben.",
+        'ja': '「使用」をクリックすると、RUN BACKTESTのEXPANDING方式（OOS内でパーセンタイルを毎日再計算）で最終的なバックテストが実行されます。Optimizerの固定値方式ではありません。結果は上のOptimizerのOOSウィンドウで見たものと異なる場合があります。',
+        'zh': '点击"使用"将以RUN BACKTEST的扩展(EXPANDING)方法运行最终回测（在OOS中每天重新计算百分位）——而非Optimizer的冻结数值方法。结果可能与您在上方Optimizer的OOS窗口中看到的不同。',
+        'ko': "'사용'을 클릭하면 RUN BACKTEST의 EXPANDING 방식(OOS에서 매일 백분위수 재계산)으로 최종 백테스트가 실행됩니다 -- Optimizer의 고정값 방식이 아닙니다. 결과는 위의 Optimizer OOS 윈도우에서 본 것과 다를 수 있습니다.",
+        'ar': "عند النقر على 'استخدام'، سيتم تشغيل الاختبار الخلفي النهائي باستخدام طريقة EXPANDING من RUN BACKTEST (إعادة حساب المئين يوميًا في OOS) -- وليس طريقة القيمة المجمّدة في Optimizer. قد تختلف النتائج عما شاهدته في نوافذ OOS الخاصة بـ Optimizer أعلاه.",
     },
     'window_detail_title': {
         'en': 'Window {window} — OOS detail',
@@ -1917,6 +1987,17 @@ TR = {
         'zh': 'Risk Appetite — 进出场水平',
         'ko': 'Risk Appetite — 진입/청산 레벨',
         'ar': 'Risk Appetite — مستويات الدخول/الخروج',
+    },
+    'mini_chart_indicator_legend': {
+        'en': 'Risk Appetite',
+        'pt': 'Risk Appetite',
+        'es': 'Risk Appetite',
+        'fr': 'Risk Appetite',
+        'de': 'Risk Appetite',
+        'ja': 'Risk Appetite',
+        'zh': 'Risk Appetite',
+        'ko': 'Risk Appetite',
+        'ar': 'Risk Appetite',
     },
     'mini_chart_entry_short': {
         'en': 'Short entry',
@@ -2161,15 +2242,15 @@ TR = {
         'ar': '#{rank} Walk-Forward OOS MaxDD — P{eh}/P{el} خروج P{ex}',
     },
     'caption_click_use': {
-        'en': "Click 'Use' to apply the percentiles to the Backtest and run the full result.",
-        'pt': "Clique 'Usar' para aplicar os percentis no Backtest e rodar o resultado completo.",
-        'es': "Haga clic en 'Usar' para aplicar los percentiles al Backtest y ejecutar el resultado completo.",
-        'fr': "Cliquez sur 'Utiliser' pour appliquer les percentiles au Backtest et obtenir le resultat complet.",
-        'de': "Klicken Sie auf 'Verwenden', um die Perzentile auf den Backtest anzuwenden und das vollstandige Ergebnis auszufuhren.",
-        'ja': '「使用」をクリックしてパーセンタイルをバックテストに適用し、完全な結果を実行します。',
-        'zh': '点击「使用」将百分位数应用于回测并运行完整结果。',
-        'ko': "'사용'을 클릭하여 백분위수를 백테스트에 적용하고 전체 결과를 실행하세요.",
-        'ar': "انقر على 'استخدام' لتطبيق المئينات على الاختبار الخلفي وتشغيل النتيجة الكاملة.",
+        'en': "Click 'Use' to apply these percentiles to RUN BACKTEST's EXPANDING methodology (daily recalculation in the OOS) and run the full result -- not the Optimizer's frozen-value method.",
+        'pt': "Clique 'Usar' para aplicar esses percentis na metodologia EXPANDING do RUN BACKTEST (recalculo diario no OOS) e rodar o resultado completo -- nao o metodo de valor congelado do Optimizer.",
+        'es': "Haga clic en 'Usar' para aplicar estos percentiles a la metodologia EXPANDING de RUN BACKTEST (recalculo diario en el OOS) y ejecutar el resultado completo -- no el metodo de valor congelado del Optimizer.",
+        'fr': "Cliquez sur 'Utiliser' pour appliquer ces percentiles a la methodologie EXPANDING de RUN BACKTEST (recalcul quotidien dans l'OOS) et obtenir le resultat complet -- pas la methode de valeur figee de l'Optimizer.",
+        'de': "Klicken Sie auf 'Verwenden', um diese Perzentile auf die EXPANDING-Methodik von RUN BACKTEST anzuwenden (tagliche Neuberechnung im OOS) und das vollstandige Ergebnis auszufuhren -- nicht die Methode des eingefrorenen Werts des Optimizers.",
+        'ja': '「使用」をクリックすると、これらのパーセンタイルをRUN BACKTESTのEXPANDING方式（OOS内で毎日再計算）に適用し、完全な結果を実行します。Optimizerの固定値方式ではありません。',
+        'zh': '点击"使用"将把这些百分位数应用于RUN BACKTEST的扩展(EXPANDING)方法（在OOS中每天重新计算）并运行完整结果——而非Optimizer的冻结数值方法。',
+        'ko': "'사용'을 클릭하면 이 백분위수를 RUN BACKTEST의 EXPANDING 방식(OOS에서 매일 재계산)에 적용하여 전체 결과를 실행합니다 -- Optimizer의 고정값 방식이 아닙니다.",
+        'ar': "انقر على 'استخدام' لتطبيق هذه المئينات على طريقة EXPANDING الخاصة بـ RUN BACKTEST (إعادة حساب يومي في OOS) وتشغيل النتيجة الكاملة -- وليس طريقة القيمة المجمّدة في Optimizer.",
     },
     'instructions_title': {
         'en': '▶ INSTRUCTIONS',
@@ -3094,8 +3175,11 @@ def compute_window_series(combined, eh, el, ex, excl_gfc, excl_covid, excl_custo
 
         if "asset" in df_oos.columns:
             asset_oos = df_oos["asset"].pct_change().fillna(0).values
+            _asset_px_oos = (1.0 / df_oos["asset"]) if invert_ativo else df_oos["asset"]
+            asset_price_oos = _asset_px_oos.tolist()
         else:
             asset_oos = np.zeros(len(df_oos))
+            asset_price_oos = []
         if invert_ativo:
             asset_oos = -asset_oos
 
@@ -3111,6 +3195,7 @@ def compute_window_series(combined, eh, el, ex, excl_gfc, excl_covid, excl_custo
             "dates": df_oos.index.strftime("%Y-%m-%d").tolist(),
             "curve": curve.tolist(),
             "indicator": df_oos["indicator"].tolist(),
+            "asset": asset_price_oos,
             "tH": tH, "tL": tL, "tM": tM,
         })
     return out
@@ -3264,9 +3349,9 @@ with st.sidebar:
                               start=pd.Timestamp(_bd_check.index[0]).strftime("%Y-%m-%d")))
 
     st.divider()
-    run_btn = st.button(t("run_button"), type="primary", use_container_width=True)
+    run_btn = st.button(t("run_button"), type="primary", use_container_width=True, help=t("help_run_backtest"), key="run_backtest_btn")
     st.divider()
-    opt_btn = st.button(t("optimize_button"), type="secondary", use_container_width=True, help=t("help_optimizer"))
+    opt_btn = st.button(t("optimize_button"), type="secondary", use_container_width=True, help=t("help_optimizer"), key="optimize_btn")
 
     st.markdown(
         f"<div style='text-align:center;color:#3a3a3a;font-size:0.6rem;margin-top:8px;'>"
@@ -3857,28 +3942,131 @@ elif opt_btn or (not run_btn and st.session_state.get('opt_agg') is not None):
                 unsafe_allow_html=True
             )
             dates = pd.to_datetime(ws["dates"])
-            mini_layout = {**BBG_LAYOUT, "margin": dict(t=30, b=20, l=35, r=10)}
-            c_eq, c_ind = st.columns(2)
-            with c_eq:
-                fig_eq = go.Figure()
-                fig_eq.add_trace(go.Scatter(x=dates, y=ws["curve"], mode="lines",
-                                             line=dict(color="#FF7700", width=1.5)))
-                fig_eq.update_layout(height=220, title=t("mini_chart_equity_title"),
-                                      showlegend=False, **mini_layout)
-                st.plotly_chart(fig_eq, use_container_width=True, theme=None, key=f"mini_eq_{chart_key}_{ws['window']}")
-            with c_ind:
-                fig_ind = go.Figure()
-                fig_ind.add_trace(go.Scatter(x=dates, y=ws["indicator"], mode="lines",
-                                              line=dict(color="#4A90D9", width=1.2)))
-                fig_ind.add_hline(y=ws["tH"], line_dash="dot", line_color="#CC4444",
-                                   annotation_text=t("mini_chart_entry_short"), annotation_font_size=9)
-                fig_ind.add_hline(y=ws["tL"], line_dash="dot", line_color="#4ABF4A",
-                                   annotation_text=t("mini_chart_entry_long"), annotation_font_size=9)
-                fig_ind.add_hline(y=ws["tM"], line_dash="dash", line_color="#999999",
-                                   annotation_text=t("mini_chart_exit"), annotation_font_size=9)
-                fig_ind.update_layout(height=220, title=t("mini_chart_indicator_title"),
-                                       showlegend=False, **mini_layout)
-                st.plotly_chart(fig_ind, use_container_width=True, theme=None, key=f"mini_ind_{chart_key}_{ws['window']}")
+            # ── Cota + indicador num UNICO figure (2 linhas, eixo X compartilhado)
+            # em vez de 2 graficos separados lado a lado: assim o hovermode
+            # "x unified" do Plotly desenha a MESMA linha vertical tracejada
+            # nos dois paineis simultaneamente (igual ao grafico principal),
+            # permitindo confirmar visualmente que a cota reage exatamente
+            # quando o indicador toca um dos niveis de gatilho. ──
+            fig_pop = make_subplots(
+                rows=2, cols=1, shared_xaxes=True,
+                row_heights=[0.52, 0.48], vertical_spacing=0.16,
+                subplot_titles=[t("mini_chart_equity_title"), t("mini_chart_indicator_title")],
+                specs=[[{"secondary_y": True}], [{"secondary_y": False}]],
+            )
+            # Cota (eixo esquerdo, laranja BBG)
+            fig_pop.add_trace(go.Scatter(
+                x=dates, y=ws["curve"], mode="lines", name=t("mini_chart_equity_title"),
+                line=dict(color="#FF7700", width=1.5),
+                hovertemplate=t("mini_chart_equity_title") + ": %{y:.2f}<extra></extra>",
+            ), row=1, col=1)
+            # Ativo (eixo direito — RHS, verde fluorescente sobre fundo escuro)
+            if ws.get("asset"):
+                fig_pop.add_trace(go.Scatter(
+                    x=dates, y=ws["asset"], mode="lines",
+                    name=f"{ticker_display} " + t("label_rhs"),
+                    line=dict(color="#39FF14", width=1.2),
+                    opacity=0.9,
+                    hovertemplate=f"{ticker_display} " + t("label_rhs") + ": %{y:.2f}<extra></extra>",
+                ), row=1, col=1, secondary_y=True)
+            # Indicador (eixo esquerdo da 2a linha, azul). Legenda/hover
+            # usam o nome curto "Risk Appetite" (sem o sufixo "- niveis de
+            # entrada/saida", que fica so no titulo do painel) para o hover
+            # ficar mais limpo.
+            fig_pop.add_trace(go.Scatter(
+                x=dates, y=ws["indicator"], mode="lines", name=t("mini_chart_indicator_legend"),
+                line=dict(color="#4A90D9", width=1.2),
+                hovertemplate=t("mini_chart_indicator_legend") + ": %{y:.3f}<extra></extra>",
+            ), row=2, col=1)
+            # Niveis de gatilho como TRACES reais (nao add_hline/shape) para
+            # que o valor apareca tambem no hover unificado, igual ao
+            # grafico principal do backtest.
+            for _level, _dash, _color, _label in [
+                (ws["tH"], "dot",  "#CC4444", t("mini_chart_entry_short")),
+                (ws["tL"], "dot",  "#4ABF4A", t("mini_chart_entry_long")),
+                (ws["tM"], "dash", "#999999", t("mini_chart_exit")),
+            ]:
+                fig_pop.add_trace(go.Scatter(
+                    x=dates, y=[_level] * len(dates), mode="lines", name=_label,
+                    line=dict(color=_color, width=1, dash=_dash),
+                    hovertemplate=f"{_label}: " + "%{y:.2f}<extra></extra>",
+                ), row=2, col=1)
+                fig_pop.add_annotation(x=dates[-1], y=_level, text=_label, showarrow=False,
+                                        xanchor="left", font=dict(size=8, color=_color),
+                                        row=2, col=1)
+
+            fig_pop.update_layout(
+                height=440, hovermode="x unified", showlegend=False,
+                margin=dict(t=50, b=20, l=45, r=70),
+                **{k: v for k, v in BBG_LAYOUT.items() if k not in ("margin", "xaxis", "yaxis")},
+            )
+            # Spikes nativos do Plotly desligados: "spikemode=across" so
+            # atravessa o dominio vertical do PROPRIO eixo (ou seja, fica
+            # restrito a linha/painel sob o mouse), nao atravessa paineis
+            # empilhados com dominios de y diferentes. Por isso a linha
+            # tracejada unificada entre os 2 paineis e desenhada via JS
+            # abaixo (shape com yref="paper", que cobre a altura toda da
+            # figura, ignorando o limite de dominio de cada subplot).
+            fig_pop.update_xaxes(
+                gridcolor="#1a1a1a", zerolinecolor="#333",
+                tickfont=dict(color="#c0c0c0", size=10),
+                showspikes=False,
+            )
+            fig_pop.update_yaxes(row=1, col=1, gridcolor="#1a1a1a",
+                                  tickfont=dict(color="#c0c0c0", size=10))
+            fig_pop.update_yaxes(row=1, col=1, secondary_y=True,
+                                  tickfont=dict(color="#39FF14", size=10),
+                                  showgrid=False, zeroline=False)
+            fig_pop.update_yaxes(row=2, col=1, gridcolor="#1a1a1a",
+                                  tickfont=dict(color="#c0c0c0", size=10))
+            for ann in fig_pop.layout.annotations:
+                if ann.text in (t("mini_chart_equity_title"), t("mini_chart_indicator_title")):
+                    ann.font.color = "#FF7700"
+                    ann.font.size = 11
+                    ann.font.family = "Courier New"
+
+            # ── Crosshair vertical unico cobrindo os 2 paineis simultanea-
+            # mente: renderiza o grafico via JS puro (Plotly.js direto, sem
+            # o wrapper st.plotly_chart) para poder escutar plotly_hover /
+            # plotly_unhover e desenhar/mover uma linha (shape, yref="paper"
+            # => altura cheia da figura) na posicao x do cursor, valendo
+            # tanto para quem passa o mouse no grafico de cima (cota) quanto
+            # no de baixo (indicador). ──
+            _div_id = "pop_" + "".join(
+                c if c.isalnum() else "_" for c in f"{chart_key}_{ws['window']}"
+            )
+            # fig_pop.to_json() usa o encoder nativo do Plotly (lida com
+            # ndarray/np.float64 etc., o que json.dumps() puro nao faz).
+            _fig_json_str = fig_pop.to_json()
+            _html = f"""
+<div id="{_div_id}" style="width:100%;"></div>
+<script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+<script>
+(function() {{
+    var gd = document.getElementById("{_div_id}");
+    var figJson = {_fig_json_str};
+    var data = figJson.data;
+    var layout = figJson.layout;
+    Plotly.newPlot(gd, data, layout, {{responsive: true, displayModeBar: false}}).then(function() {{
+        gd.on("plotly_hover", function(evt) {{
+            if (!evt.points || !evt.points.length) return;
+            var xVal = evt.points[0].x;
+            Plotly.relayout(gd, {{
+                shapes: [{{
+                    type: "line", xref: "x", x0: xVal, x1: xVal,
+                    yref: "paper", y0: 0, y1: 1,
+                    line: {{color: "#999999", width: 1, dash: "dot"}}
+                }}]
+            }});
+        }});
+        gd.on("plotly_unhover", function(evt) {{
+            Plotly.relayout(gd, {{shapes: []}});
+        }});
+    }});
+}})();
+</script>
+"""
+            components.html(_html, height=460, scrolling=False)
 
     def _wf_bar(detail, metric, title, col_pos="#FF7700", col_neg="#CC4444",
                 series_data=None, chart_key="wf_bar"):
@@ -3928,7 +4116,7 @@ elif opt_btn or (not run_btn and st.session_state.get('opt_agg') is not None):
             f"{t('row_win', v=_win_s)}</span>",
             unsafe_allow_html=True
         )
-        if c_btn.button(t("button_use"), key=f"sh_{rank}"):
+        if c_btn.button(t("button_use"), key=f"sh_{rank}", help=t("help_button_use")):
             st.session_state["_new_eh"] = float(row["eh"])
             st.session_state["_new_el"] = float(row["el"])
             st.session_state["_new_ex"] = float(row["ex"])
@@ -3984,7 +4172,7 @@ elif opt_btn or (not run_btn and st.session_state.get('opt_agg') is not None):
                 f"{t('row_win', v=_win_s)}</span>",
                 unsafe_allow_html=True
             )
-            if c_btn.button(t("button_use"), key=f"dd_{rank}"):
+            if c_btn.button(t("button_use"), key=f"dd_{rank}", help=t("help_button_use")):
                 st.session_state["_new_eh"] = float(row["eh"])
                 st.session_state["_new_el"] = float(row["el"])
                 st.session_state["_new_ex"] = float(row["ex"])
