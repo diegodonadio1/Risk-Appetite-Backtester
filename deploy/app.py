@@ -27,6 +27,18 @@ st.set_page_config(page_title="Risk Appetite Backtester", page_icon="📈", layo
 
 st.markdown("""
 <style>
+  /* ── Forca as CSS custom properties publicas do Streamlit
+     (--st-*) diretamente, garantindo cor correta em TODO widget que
+     dependa do tema (radio, slider, calendario, checkbox), mesmo que
+     o config.toml nao seja lido corretamente no deploy. Ref.: cada opcao
+     de theme.* no config.toml tem uma variavel --st-<opcao-em-dash-case>. ── */
+  :root, .stApp {
+      --st-primary-color: #FF7700 !important;
+      --st-background-color: #000000 !important;
+      --st-secondary-background-color: #111111 !important;
+      --st-text-color: #e0e0e0 !important;
+  }
+
   /* ── Esconde banner branco e botão Deploy do Streamlit ── */
   header[data-testid="stHeader"]  { display: none !important; }
   [data-testid="stToolbar"]       { display: none !important; }
@@ -227,16 +239,26 @@ st.markdown("""
      garantir legibilidade mesmo se o tema padrao (claro) for aplicado ── */
   [data-baseweb="tooltip"],
   div[role="tooltip"],
-  [data-testid="stTooltipContent"] {
+  [data-testid="stTooltipContent"],
+  [class*="stTooltipContent"],
+  .stTooltipContent,
+  [data-baseweb="tooltip"] > div,
+  div[role="tooltip"] > div {
       background-color: #1a1a1a !important;
+      opacity: 1 !important;
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
       color: #e0e0e0 !important;
       border: 1px solid #444444 !important;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.6) !important;
   }
   [data-baseweb="tooltip"] *,
   div[role="tooltip"] *,
-  [data-testid="stTooltipContent"] * {
+  [data-testid="stTooltipContent"] *,
+  [class*="stTooltipContent"] * {
       color: #e0e0e0 !important;
       background-color: transparent !important;
+      opacity: 1 !important;
   }
   /* ── Garante laranja BBG em radio/checkbox/slider/select_slider mesmo
      que o tema (config.toml) nao seja aplicado e caia no vermelho padrao
